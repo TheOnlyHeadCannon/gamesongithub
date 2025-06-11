@@ -1,0 +1,117 @@
+<!-- flappy/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flappy Bird Deluxe</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #87CEEB, #fff);
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: url('background.png') center/cover;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="1400" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const flapSound = new Audio('flap.wav');
+    const hitSound = new Audio('hit.wav');
+
+    let birdY = canvas.height / 2;
+    let birdVelocity = 0;
+    let gravity = 0.45;
+    let lift = -8;
+    let pipes = [];
+    let frame = 0;
+    let score = 0;
+    let gameOver = false;
+
+    const bird = new Image();
+    bird.src = 'bird.png';
+
+    function drawBird() {
+      ctx.drawImage(bird, 60, birdY, 34, 24);
+    }
+
+    function createPipe() {
+      const top = Math.random() * (canvas.height / 2);
+      pipes.push({
+        x: canvas.width,
+        top,
+        bottom: canvas.height - top - 195
+      });
+    }
+
+    function drawPipes() {
+      ctx.fillStyle = '#75bf30';
+      for (let pipe of pipes) {
+        ctx.fillRect(pipe.x, 0, 60, pipe.top);
+        ctx.fillRect(pipe.x, canvas.height - pipe.bottom, 60, pipe.bottom);
+      }
+    }
+
+    function update() {
+      if (gameOver) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawBird();
+      drawPipes();
+
+      birdVelocity += gravity;
+      birdY += birdVelocity;
+
+      if (frame % 90 === 0) createPipe();
+
+      for (let pipe of pipes) {
+        pipe.x -= 2;
+
+        // Collision
+        if (
+          60 + 34 > pipe.x &&
+          60 < pipe.x + 60 &&
+          (birdY < pipe.top || birdY + 24 > canvas.height - pipe.bottom)
+        ) {
+          hitSound.play();
+          gameOver = true;
+        }
+
+        if (pipe.x + 60 === 60) score++;
+      }
+
+      if (birdY + 24 > canvas.height) {
+        hitSound.play();
+        gameOver = true;
+      }
+
+      ctx.fillStyle = 'black';
+      ctx.font = '24px sans-serif';
+      ctx.fillText('Score: ' + score, 10, 30);
+
+      frame++;
+      if (!gameOver) requestAnimationFrame(update);
+    }
+
+    document.addEventListener('keydown', () => {
+      birdVelocity = lift;
+      flapSound.play();
+    });
+
+    bird.onload = () => update();
+
+    if (gameOver) {
+      
+    }
+  </script>
+</body>
+</html>

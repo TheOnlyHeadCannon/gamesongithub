@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Games on GitHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background-color: #0f0f0f;
+      color: #fff;
+    }
+    header {
+      background: #1e1e1e;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #61dafb;
+    }
+    nav a {
+      color: #ccc;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a:hover {
+      color: #fff;
+    }
+    .search-bar {
+      margin: 30px auto;
+      text-align: center;
+    }
+    .search-bar input {
+      width: 60%;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
+    .featured {
+      background: #222;
+      margin: 40px;
+      padding: 30px;
+      border-radius: 12px;
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+    .featured img {
+      width: 250px;
+      border-radius: 10px;
+    }
+    .featured-text {
+      max-width: 600px;
+    }
+    .featured-text h2 {
+      margin-top: 0;
+      color: #61dafb;
+    }
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 0 40px 60px;
+    }
+    .category {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+      width: 220px;
+      text-align: center;
+      transition: background 0.3s;
+    }
+    .category:hover {
+      background: #2a2a2a;
+    }
+    .category h3 {
+      margin: 10px 0 5px;
+      color: #61dafb;
+    }
+    .category p {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    footer {
+      background: #111;
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Games on GitHub</div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Browse</a>
+      <a href="#">Categories</a>
+      <a href="#">Submit Game</a>
+      <a href="#">GitHub</a>
+    </nav>
+  </header>
+
+  <div class="search-bar">
+    <input type="text" placeholder="Search for games, tags, or creators..." />
+  </div>
+
+  <section class="featured">
+    <img src="https://via.placeholder.com/250x140?text=Featured+Game" alt="Featured Game">
+    <div class="featured-text">
+      <h2>Featured: Flappy Bird</h2>
+      <p>The classic flappy bird everyone knows and loves just now on a website!</p>
+      <a href="#" style="color: #61dafb;">Play Now →</a>
+    </div>
+  </section>
+
+  <section class="categories">
+    <h1>🎮 Games on GitHub - Play Now</h1>
+    <div class="game-container">
+        <div>
+            <h2>🐤 Flappy Bird Deluxe</h2>
+            <iframe src="flappy/index.html" title="Flappy Bird"></iframe>
+        </div>
+        <div>
+            <h2>🐍 Snake Evolution</h2>
+            <iframe src="snake/index.html" title="Snake Game"></iframe>
+        </div>
+        <div>
+            <h2>🚀 Space Invaders Remastered</h2>
+            <iframe src="space-invaders/index.html" title="Space Invaders"></iframe>
+        </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Games on GitHub | Built with ♥ by open-source contributors
+  </footer>
+</body>
+</html>
