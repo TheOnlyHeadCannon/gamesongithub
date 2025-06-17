@@ -1,26 +1,62 @@
-<!-- flappy/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <title>Flappy Bird Deluxe</title>
   <style>
     body {
       margin: 0;
       overflow: hidden;
-      background: linear-gradient(to bottom, #87CEEB, #fff);
+      background: linear-gradient(to bottom, #000000, #000000);
+      font-family: 'Press Start 2P', monospace;
     }
     canvas {
       display: block;
       margin: 0 auto;
       background: url('background.png') center/cover;
     }
+    #restartBtn {
+      font-family: 'Press Start 2P', monospace;
+      display: none;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      padding: 16px 32px;
+      background-color: #ff6600;
+      color: white;
+      border: 4px solid #ffffff;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 10;
+      text-shadow: 2px 2px 0 #000;
+      box-shadow: 4px 4px 0 #000, inset -2px -2px 0 rgba(255, 255, 255, 0.3);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    #restartBtn:hover {
+      background-color: #ff8533;
+      box-shadow: 2px 2px 0 #000, inset -1px -1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    #restartBtn:active {
+      transform: translate(-50%, -48%);
+      box-shadow: 1px 1px 0 #000, inset 1px 1px 0 rgba(0, 0, 0, 0.4);
+    }
+
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="1400" height="600"></canvas>
+  <canvas id="gameCanvas" width="500" height="900"></canvas>
+  <button id="restartBtn">Restart</button>
+
   <script>
+    const textureImage = new Image();
+    textureImage.src = 'pipe_texture.png';
+
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -29,8 +65,8 @@
 
     let birdY = canvas.height / 2;
     let birdVelocity = 0;
-    let gravity = 0.45;
-    let lift = -8;
+    const gravity = 0.5;
+    const lift = -8.5;
     let pipes = [];
     let frame = 0;
     let score = 0;
@@ -38,6 +74,8 @@
 
     const bird = new Image();
     bird.src = 'bird.png';
+
+    const restartBtn = document.getElementById('restartBtn');
 
     function drawBird() {
       ctx.drawImage(bird, 60, birdY, 34, 24);
@@ -53,11 +91,22 @@
     }
 
     function drawPipes() {
-      ctx.fillStyle = '#75bf30';
       for (let pipe of pipes) {
-        ctx.fillRect(pipe.x, 0, 60, pipe.top);
-        ctx.fillRect(pipe.x, canvas.height - pipe.bottom, 60, pipe.bottom);
+        // Draw top pipe (flipped vertically)
+        ctx.save();
+        ctx.translate(pipe.x, pipe.top);
+        ctx.scale(1, -1); // Flip vertically
+        ctx.drawImage(textureImage, 0, 0, 60, pipe.top);
+        ctx.restore();
+
+        // Draw bottom pipe
+        ctx.drawImage(textureImage, pipe.x, canvas.height - pipe.bottom, 60, pipe.bottom);
       }
+    }
+
+    function showGameOver() {
+      console.log("showGameOver called");
+      restartBtn.style.display = 'block';
     }
 
     function update() {
@@ -76,26 +125,38 @@
       for (let pipe of pipes) {
         pipe.x -= 2;
 
-        // Collision
+        // Collision with pipes
         if (
           60 + 34 > pipe.x &&
           60 < pipe.x + 60 &&
           (birdY < pipe.top || birdY + 24 > canvas.height - pipe.bottom)
         ) {
-          hitSound.play();
-          gameOver = true;
+          if (!gameOver) {
+            hitSound.play();
+            gameOver = true;
+            showGameOver();
+            console.log("Collision with pipe – game over!");
+          }
         }
 
         if (pipe.x + 60 === 60) score++;
       }
 
+      // Collision with ground
       if (birdY + 24 > canvas.height) {
-        hitSound.play();
-        gameOver = true;
+        if (!gameOver) {
+          hitSound.play();
+          gameOver = true;
+          showGameOver();
+          console.log("Hit the ground – game over!");
+        }
       }
 
-      ctx.fillStyle = 'black';
-      ctx.font = '24px sans-serif';
+      ctx.fillStyle = 'white';
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 4;
+      ctx.font = '16px "Press Start 2P"';
+      ctx.strokeText('Score: ' + score, 10, 30);
       ctx.fillText('Score: ' + score, 10, 30);
 
       frame++;
@@ -103,15 +164,24 @@
     }
 
     document.addEventListener('keydown', () => {
-      birdVelocity = lift;
-      flapSound.play();
+      if (!gameOver) {
+        birdVelocity = lift;
+        flapSound.play();
+      }
+    });
+
+    restartBtn.addEventListener('click', () => {
+      birdY = canvas.height / 2;
+      birdVelocity = 0;
+      pipes = [];
+      frame = 0;
+      score = 0;
+      gameOver = false;
+      restartBtn.style.display = 'none';
+      update();
     });
 
     bird.onload = () => update();
-
-    if (gameOver) {
-      
-    }
   </script>
 </body>
 </html>
